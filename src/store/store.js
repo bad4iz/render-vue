@@ -7,34 +7,38 @@ const store = new Vuex.Store({
   state: {
     lists: [
       {
-        id: 1,
+        id: 0,
         check: true,
         value: '',
+        subcards: [1],
+
+      },
+      {
+        id: 1,
+        check: true,
+        value: 'dddddd',
+        subcards: [2, 3],
+
       },
       {
         id: 2,
         check: false,
         value: '',
-        subcards: [
-          {
-            id: 21,
-            check: true,
-            value: '',
-          },
-          {
-            id: 22,
-            check: false,
-            value: ''
-          },
-          {
-            id: 23,
-            check: false,
-            value: ''
-          }
-        ],
+        subcards: [21, 22],
       },
       {
         id: 3,
+        check: false,
+        value: '',
+        subcards: [21, 22],
+      },
+      {
+        id: 21,
+        check: false,
+        value: '',
+      },
+      {
+        id: 22,
         check: false,
         value: '',
       }
@@ -48,48 +52,21 @@ const store = new Vuex.Store({
       console.log('list')
       return state.lists;
     },
-    card: state => (id) => {
-      console.log('card', id)
-      for (let i=0; i<state.lists.length; i += 1) {
-        if (state.lists[i].id===id) {
-          return state.lists[i];
-        }
-        if(state.lists[i].subcards){
-          for (let j = 0; j < state.lists[i].subcards.length; j++) {
-            if(state.lists[i].subcards[j].id == id){
-              return state.lists[i].subcards[j];
-            }
-            // вставить суда рекурсию
-          }
-        }
-      }
-    },
+    card: state => (id) => state.lists.find(card => card.id ===id )
   },
   mutations: {
-    updateById(state,  {item} ) {
-      state.lists = state.lists.map((el) => {
-
-        if (Array.isArray(el.subcards)) {
-          const newEl={subcards : el.subcards.map((el) => {
-            if (el.id === item.id) {
-              // console.log(el.id)
-              el.value = item.value;
-            }
-            return el;
-          })}
-          return newEl
-        }
-        if (el.id === item.id) {
+    updateById(state,  {type, item} ) {
+      state[type] = state.lists.map((el) => {
+        if(el.id ==item.id) {
           el.value = item.value;
-          return el;
         }
         return el;
       });
       state.element = {value: item.value}
     },
-    update(state, { type, item }) {
-      state[type] = { ...state[type], item };
-    },
+    // update(state, { type, item }) {
+    //   state[type] = { ...state[type], item };
+    // },
     delete(state, id) {
       state.lists = state.lists.filter(card => card.id !== id)
     }
